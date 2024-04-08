@@ -3,12 +3,14 @@ import React from "react";
 import TodoFilter from "../todo-filter";
 import './footer.css'
 
-const Footer = () => {
+const Footer = ({unCompletedCount,todoData,onFiltterItems,deleteCompletedItems}) => {
     return (
         <footer className="footer">
-            <span className="todo-count">1 time left</span>
-            <TodoFilter/>
-            <button className="clear-completed">clear completed</button>
+            <span className="todo-count">{unCompletedCount} time left</span>
+            <TodoFilter todos = {todoData} 
+            onFiltterItems = {onFiltterItems}
+            />
+            <button className="clear-completed" onClick={deleteCompletedItems}>clear completed</button>
         </footer>
     )
 }

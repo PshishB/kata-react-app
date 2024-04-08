@@ -4,22 +4,8 @@ import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 import './todo-list-item.css'
 
 export default class TodoListItem extends Component {
-
-    state = {
-        completed: this.props.classic.includes('completed')
-    }
-
-    onLabelClick = () => {
-        this.setState((({completed}) => {
-            return {
-                completed: !completed
-            }
-        }))
-    }
-
     render () {
-        const {label,classic,time} = this.props;
-        let {completed} = this.state;
+        const {label,time,onToogleCompleted,onDeleted,completed} = this.props;
         
         let classNames = '';
 
@@ -30,12 +16,12 @@ export default class TodoListItem extends Component {
         return (
         <div className="view">
             <input className="toggle" type="checkbox"/>
-            <label className = {classNames} onClick={this.onLabelClick}>
+            <label className = {classNames} onClick={onToogleCompleted}>
                 <span className="description">{label}</span>
                 <span className="created">{time}</span>
             </label>
             <button className="icon icon-edit"></button>
-            <button className="icon icon-destroy" onClick={this.props.onDeleted}></button>
+            <button className="icon icon-destroy" onClick={onDeleted}></button>
         </div>
     )
     }   
