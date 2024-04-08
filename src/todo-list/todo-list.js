@@ -1,4 +1,5 @@
 import React,{Component} from "react";
+import PropTypes from 'prop-types';
 
 import TodoListItem from "../todo-list-item/todo-list-item";
 import './todo-list.css'
@@ -23,6 +24,15 @@ const TodoList =  ({todos,onDeleted,onToogleCompleted}) => {
                 {elements}
             </ul>  
         )
+}
+
+TodoList.propTypes = {
+    todos:PropTypes.arrayOf(PropTypes.object)
+}
+
+TodoList.defaultProps = {
+    onDeleted: () => {},
+    onToogleCompleted: () => {}
 }
 
 export default TodoList

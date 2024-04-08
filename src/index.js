@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import Header from "./header/header";
 import TodoList from "./todo-list/todo-list";
 import Footer from "./footer/footer";
+import { formatDistanceToNow } from 'date-fns'
 
 import './index.css';
 
@@ -23,19 +24,40 @@ class App extends Component {
     return {
       label,
       classic,
-      time:123,
+      timeLabel: 'Created ' + formatDistanceToNow(new Date(),{includeSeconds:true}) + " ago",
+      timeReal:JSON.stringify(new Date()),
       completed: classic === 'completed' ? true : false ,
       id:this.maxId++
     }
   }
 
-  toogleProperty (arr, id, propName) {
-    const idx = arr.findIndex((el) => el.id===id);
-    const oldItem = arr[idx];
+  toogleProperty(arr, id, propName) {
+    return arr.map(item => {
+      if (item.id === id) {
+        return {
+          ...item,
+          [propName]: !item[propName]
+        };
+      }
+      return item;
+    });
+  }
+  
+  componentDidMount() {
+    this.updateTimeInterval  = setInterval(this.updateTimeCreated,1000)
+  }
 
-    const newItem = {...oldItem, [propName]:!oldItem[propName]};
+  componentWillUnmount() {
+    clearInterval(this.updateTimeInterval);
+  }
 
-    return [...arr.slice(0,idx),newItem,...arr.slice(idx+1)];;
+  updateTimeCreated = () => {
+    this.setState(prevState => ({
+      todoData:prevState.todoData.map(todo => ({
+        ...todo,
+        timeLabel: 'Created ' + formatDistanceToNow(JSON.parse(todo.timeReal),{ includeSeconds: true }) + " ago"
+      }))
+    }))
   }
 
   onAddItem = (label) => {
@@ -56,14 +78,15 @@ class App extends Component {
   }
 
   deleteItem = (id) => {
-    this.setState(({todoData}) => {
-      const idx = todoData.findIndex((el) => el.id===id);
-      const newArray = [...todoData.slice(0,idx),...todoData.slice(idx+1)];
+    this.setState(({ todoData }) => {
+      const idx = todoData.findIndex((el) => el.id === id);
+      const newArray = todoData.slice(0, idx).concat(todoData.slice(idx + 1));
       return {
-        todoData:newArray
-      }
-    })
-  }
+        todoData: newArray
+      };
+    });
+  };
+  
 
   deleteCompletedItems = () => {
     this.setState (({todoData}) => {
